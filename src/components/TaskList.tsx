@@ -16,14 +16,48 @@ export function TaskList() {
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    
+    if (!newTaskTitle) {
+      alert("Digite um título para sua tarefa")   
+      return;   
+    }
+    else {
+      const newTaskComponent = {
+        id: Math.random(),
+        title: newTaskTitle,
+        isComplete: false
+      }
+
+      setTasks(oldTask => [...oldTask, newTaskComponent]);
+      setNewTaskTitle("");
+    }
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+        const taskIsComplete = tasks.map(task => task.id === id ? {
+          ...task,
+          isComplete: !task.isComplete
+        } : task);
+
+        try {
+          setTasks(taskIsComplete)
+        }
+        catch (error) {
+          alert("Não foi possível alterar a task pelo seguinte erro: " + error)
+        }
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    const removeTask = tasks.filter(task => task.id !== id);
+
+    try {
+      setTasks(removeTask);
+    } catch (error) {
+      alert("Não foi possível remover essa task pelo seguinte erro: " + error)
+    }
+
   }
 
   return (
@@ -32,7 +66,7 @@ export function TaskList() {
         <h2>Minhas tasks</h2>
 
         <div className="input-group">
-          <input 
+          <input
             type="text" 
             placeholder="Adicionar novo todo" 
             onChange={(e) => setNewTaskTitle(e.target.value)}
